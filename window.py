@@ -44,7 +44,7 @@ class Win(mglw.WindowConfig):
         self.scale = Decimal(1.0)
 
         self.auto_zoom = False
-        self.auto_zoom_speed = Decimal(1.0)
+        self.zoom_speed = Decimal(1.0)
 
         self.wnd.mouse_exclusivity = False
         self.wnd.cursor = True
@@ -55,7 +55,7 @@ class Win(mglw.WindowConfig):
         self.wnd.ctx.clear(1.0, 0.0, 0.0)
 
         if self.auto_zoom and self.scale > 1.925641750805661457150236734E-15:
-            self.scale -= self.auto_zoom_speed / (10/self.scale)
+            self.scale -= self.zoom_speed / (10/self.scale)
         
         self.prog['max_iter'].value = MAX_ITER
         self.prog['scale'].value = self.scale
@@ -78,7 +78,7 @@ class Win(mglw.WindowConfig):
     def ui(self):
         imgui.new_frame()
 
-        imgui.set_next_window_size(200, 150)
+        imgui.set_next_window_size(200, 200)
         imgui.begin("Info")
         imgui.text("Toggle cursor: <mouse3>")
         imgui.text(f"y: {self.center[1]:.12f}")
@@ -88,7 +88,7 @@ class Win(mglw.WindowConfig):
         if imgui.collapsing_header("Zoom")[0]:
             imgui.text("toggle: <g>")
             imgui.text("reset: <r>")
-            self.auto_zoom_speed = Decimal(imgui.slider_float("Speed", self.auto_zoom_speed, min_value=0.1, max_value=1.0)[1])
+            self.zoom_speed = Decimal(imgui.slider_float("Speed", self.zoom_speed, min_value=0.1, max_value=2.0)[1])
 
         imgui.end()
 
@@ -117,7 +117,7 @@ class Win(mglw.WindowConfig):
     def mouse_scroll_event(self, x_offset: float, y_offset: float):
         self.imgui.mouse_scroll_event(x_offset, y_offset)
         if self.wnd.mouse_exclusivity and self.scale > 1.925641750805661457150236734E-15:
-            self.scale -= Decimal(y_offset) / (10/self.scale)
+            self.scale -= self.zoom_speed / (10/self.scale)
 
     def key_event(self, key, action, modifiers):
         self.imgui.key_event(key, action, modifiers)
