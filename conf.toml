@@ -1,0 +1,7 @@
+[constants]
+max_iterations = 512
+
+[resources]
+rel_shader_path = 'shaders'
+rel_resource_path = 'resources'
+rel_texture_path = 'texture2.png'
