@@ -19,8 +19,8 @@ RESOURCE_PATH: str = conf['resources']['rel_resource_path']
 class Win(mglw.WindowConfig):
     # context settings
     gl_version = (4, 4)
-    window_size = (1200, 900)
-    aspect_ratio = 1200/900
+    window_size = (900, 600)
+    aspect_ratio = 900/600
     resizable = False
     resource_dir = (Path(__file__).parent / RESOURCE_PATH).resolve()
     vsync = False
@@ -117,7 +117,7 @@ class Win(mglw.WindowConfig):
     def mouse_scroll_event(self, x_offset: float, y_offset: float):
         self.imgui.mouse_scroll_event(x_offset, y_offset)
         if self.wnd.mouse_exclusivity and self.scale > 1.925641750805661457150236734E-15:
-            self.scale -= self.zoom_speed / (10/self.scale)
+            self.scale -= (self.zoom_speed / (10/self.scale)) * Decimal(y_offset)
 
     def key_event(self, key, action, modifiers):
         self.imgui.key_event(key, action, modifiers)
