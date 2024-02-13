@@ -1,26 +1,26 @@
+import tomllib
+from decimal import Decimal
+from pathlib import Path
+
 import imgui
 import moderngl_window as mglw
-from moderngl_window.resources.programs import ProgramDescription
 from moderngl_window.integrations.imgui import ModernglWindowRenderer
+from moderngl_window.resources.programs import ProgramDescription
 
-import tomllib
-from pathlib import Path
-from decimal import Decimal
-
-
-with open('conf.toml', 'rb') as bf:
+with open("conf.toml", "rb") as bf:
     conf = tomllib.load(bf)
 
 # config
-MAX_ITER: int = conf['constants']['max_iterations']
-SHADER_PATH: str = conf['resources']['rel_shader_path']
-RESOURCE_PATH: str = conf['resources']['rel_resource_path']
+MAX_ITER: int = conf["constants"]["max_iterations"]
+SHADER_PATH: str = conf["resources"]["rel_shader_path"]
+RESOURCE_PATH: str = conf["resources"]["rel_resource_path"]
+
 
 class Win(mglw.WindowConfig):
     # context settings
     gl_version = (4, 4)
-    window_size = (900, 600)
-    aspect_ratio = 900/600
+    window_size = (800, 600)
+    aspect_ratio = 800 / 600
     resizable = False
     resource_dir = (Path(__file__).parent / RESOURCE_PATH).resolve()
     vsync = False
@@ -36,7 +36,9 @@ class Win(mglw.WindowConfig):
         self.ctx.enable_only(self.ctx.NOTHING)
         self.wnd.title = "Mandelbrot"
 
-        attribs = mglw.geometry.attributes.AttributeNames(position='in_vert', normal=False)
+        attribs = mglw.geometry.attributes.AttributeNames(
+            position="in_vert", normal=False
+        )
         self.quad = mglw.geometry.quad_fs(attr_names=attribs)
 
         self.prog = self.__load_program()
@@ -54,15 +56,15 @@ class Win(mglw.WindowConfig):
     def render(self, time, frametime):
         self.wnd.ctx.clear(1.0, 0.0, 0.0)
 
-        if self.auto_zoom and self.scale > 1.925641750805661457150236734E-15:
-            self.scale -= self.zoom_speed / (10/self.scale)
-        
-        self.prog['max_iter'].value = MAX_ITER
-        self.prog['scale'].value = self.scale
-        self.prog['center'].value = self.center
-        self.prog['screen'].value = self.wnd.size
+        if self.auto_zoom and self.scale > 1.925641750805661457150236734e-15:
+            self.scale -= self.zoom_speed / (10 / self.scale)
 
-        if not hasattr(self, 'prev_time'):
+        self.prog["max_iter"].value = MAX_ITER
+        self.prog["scale"].value = self.scale
+        self.prog["center"].value = self.center
+        self.prog["screen"].value = self.wnd.size
+
+        if not hasattr(self, "prev_time"):
             self.prev_time = time
             self.frames = 0
         else:
@@ -88,14 +90,17 @@ class Win(mglw.WindowConfig):
         if imgui.collapsing_header("Zoom")[0]:
             imgui.text("toggle: <g>")
             imgui.text("reset: <r>")
-            self.zoom_speed = Decimal(imgui.slider_float("Speed", self.zoom_speed, min_value=0.1, max_value=2.0)[1])
+            self.zoom_speed = Decimal(
+                imgui.slider_float(
+                    "Speed", self.zoom_speed, min_value=0.1, max_value=2.0
+                )[1]
+            )
 
         imgui.end()
 
         imgui.render()
         self.imgui.render(imgui.get_draw_data())
 
-    
     def mouse_press_event(self, x: int, y: int, button: int):
         self.imgui.mouse_press_event(x, y, button)
         if button == self.wnd.mouse.middle:
@@ -103,10 +108,9 @@ class Win(mglw.WindowConfig):
 
     def mouse_release_event(self, x: int, y: int, button: int):
         self.imgui.mouse_release_event(x, y, button)
-    
+
     def mouse_drag_event(self, x, y, dx, dy):
         self.imgui.mouse_drag_event(x, y, dx, dy)
-
 
     def mouse_position_event(self, x: int, y: int, dx: int, dy: int):
         self.imgui.mouse_position_event(x, y, dx, dy)
@@ -116,8 +120,11 @@ class Win(mglw.WindowConfig):
 
     def mouse_scroll_event(self, x_offset: float, y_offset: float):
         self.imgui.mouse_scroll_event(x_offset, y_offset)
-        if self.wnd.mouse_exclusivity and self.scale > 1.925641750805661457150236734E-15:
-            self.scale -= (self.zoom_speed / (10/self.scale)) * Decimal(y_offset)
+        if (
+            self.wnd.mouse_exclusivity
+            and self.scale > 1.925641750805661457150236734e-15
+        ):
+            self.scale -= (self.zoom_speed / (10 / self.scale)) * Decimal(y_offset)
 
     def key_event(self, key, action, modifiers):
         self.imgui.key_event(key, action, modifiers)
@@ -137,8 +144,9 @@ class Win(mglw.WindowConfig):
         mglw.resources.register_program_dir(Path(SHADER_PATH).absolute())
         program = mglw.resources.programs.load(
             ProgramDescription(
-                vertex_shader=f'{name}.vert', fragment_shader=f'{name}.frag'
+                vertex_shader=f"{name}.vert", fragment_shader=f"{name}.frag"
             )
         )
 
         return program
+
