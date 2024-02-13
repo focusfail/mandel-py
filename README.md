@@ -4,6 +4,11 @@ Mandelbrot explorer written in Python with ModernGL.
 > [!NOTE]
 > Appart from GPU-sided rendering this program does not implement any other optimisations
 
+### Features
+- Double-precision
+- Zoom & movement
+- ugly information panel
+
 ### Usage
 
 1. Clone the repository and install the required libraries.
